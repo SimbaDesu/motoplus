@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artikel & Tips — Moto+</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .artikel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .artikel-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .artikel-card:hover { transform: translateY(-4px); }
+    .artikel-thumb {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+    }
+    .artikel-body { padding: 20px; }
+    .artikel-cat {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .artikel-judul {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .artikel-desc {
+      font-size: 13px;
+      color: var(--text-gray);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .artikel-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-light);
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .artikel-featured {
+      background: white;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 48px;
+    }
+    .artikel-featured .thumb {
+      background: var(--bg-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 96px;
+      min-height: 280px;
+    }
+    .artikel-featured .body {
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .kategori-filter {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .kat-btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: white;
+      color: var(--text-gray);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .kat-btn:hover, .kat-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Modal artikel */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9990;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      padding: 28px 28px 0;
+    }
+    .modal-body {
+      padding: 20px 28px 28px;
+      font-size: 15px;
+      color: var(--text-dark);
+      line-height: 1.8;
+    }
+    .modal-body p { margin-bottom: 14px; }
+    .modal-body h3 { font-size: 16px; font-weight: 700; margin: 20px 0 8px; }
+    .modal-body ul { padding-left: 20px; margin-bottom: 14px; }
+    .modal-body ul li { margin-bottom: 6px; }
+    .modal-close {
+      float: right;
+      background: var(--bg-gray);
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <span class="logo-dot"></span>
+      Moto+
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="bengkel.html">Bengkel</a></li>
+      <li><a href="blog.html" class="active">Artikel</a></li>
+    </ul>
+    <a href="bengkel.html" class="btn btn-primary">Booking Servis</a>
+  </nav>
+
+  <!-- HEADER -->
+  <section style="background: white; padding: 40px 0 28px; border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 6px;">Artikel & tips otomotif</h1>
+      <p style="color: var(--text-gray);">Panduan lengkap beli motor bekas, perawatan, dan tips berkendara</p>
+    </div>
+  </section>
+
+  <section style="padding: 48px 0 80px;">
+    <div class="container">
+
+      <!-- Artikel Featured -->
+      <div class="artikel-featured">
+        <div class="thumb" style="background: #f0f0f0;">🏍️</div>
+        <div class="body">
+          <div class="artikel-cat">Panduan beli</div>
+          <h2 style="font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 12px;">
+            Panduan lengkap membeli motor bekas untuk pemula
+          </h2>
+          <p style="font-size: 14px; color: var(--text-gray); line-height: 1.7; margin-bottom: 20px;">
+            Beli motor bekas bisa jadi pilihan cerdas jika tahu caranya. Dari cek fisik, mesin, dokumen, hingga nego harga — semua dibahas tuntas di sini.
+          </p>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 12px; color: var(--text-light);">📅 1 April 2026 · 7 mnt baca</span>
+            <button class="btn btn-primary" style="padding: 8px 18px; font-size: 13px;" onclick="bukaModal('modal1')">Baca selengkapnya</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Kategori -->
+      <div class="kategori-filter">
+        <button class="kat-btn active" onclick="filterArtikel('semua', this)">Semua</button>
+        <button class="kat-btn" onclick="filterArtikel('panduan', this)">Panduan beli</button>
+        <button class="kat-btn" onclick="filterArtikel('perawatan', this)">Perawatan</button>
+        <button class="kat-btn" onclick="filterArtikel('tips', this)">Tips & trik</button>
+        <button class="kat-btn" onclick="filterArtikel('bengkel', this)">Info bengkel</button>
+      </div>
+
+      <!-- Grid Artikel -->
+      <div class="artikel-grid" id="artikel-grid">
+
+        <div class="artikel-card" data-kat="tips" onclick="bukaModal('modal2')">
+          <div class="artikel-thumb" style="background: #fff3e0;">🔧</div>
+          <div class="artikel-body">
+            <div class="artikel-cat">Tips & trik</div>
+            <div class="artikel-judul">5 tanda motor bekas perlu segera diservis</div>
+            <div class="artikel-desc">Kenali tanda-tanda motor bekas yang butuh perhatian sebelum masalah makin parah dan biaya bengkel membengkak.</div>
+            <div class="artikel-meta">
+              <span>📅 25 Mar 2026</span>
+              <span>3 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="artikel-card" data-kat="panduan" onclick="bukaModal('modal3')">
+          <div class="artikel-thumb" style="background: #e8f5e9;">💰</div>
+          <div class="artikel-body">
+            <div class="artikel-cat">Panduan beli</div>
+            <div class="artikel-judul">Tips nego harga motor bekas agar tidak kemahalan</div>
+            <div class="artikel-desc">Strategi jitu menawar harga motor bekas agar kamu bisa dapat harga terbaik tanpa menyinggung penjual.</div>
+            <div class="artikel-meta">
+              <span>📅 20 Mar 2026</span>
+              <span>5 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="artikel-card" data-kat="panduan" onclick="bukaModal('modal4')">
+          <div class="artikel-thumb" style="background: #e3f2fd;">📋</div>
+          <div class="artikel-body">
+            <div class="artikel-cat">Panduan beli</div>
+            <div class="artikel-judul">Dokumen apa saja yang wajib dicek saat beli motor bekas?</div>
+            <div class="artikel-desc">Jangan sampai kena motor bodong! Ini daftar dokumen yang harus kamu verifikasi sebelum transaksi.</div>
+            <div class="artikel-meta">
+              <span>📅 15 Mar 2026</span>
+              <span>4 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="artikel-card" data-kat="perawatan" onclick="bukaModal('modal5')">
+          <div class="artikel-thumb" style="background: #fce4ec;">⚡</div>
+          <div class="artikel-body">
+            <div class="artikel-cat">Perawatan</div>
+            <div class="artikel-judul">Cara merawat aki motor agar tahan lebih lama</div>
+            <div class="artikel-desc">Aki motor yang terawat bisa bertahan 2-3 tahun. Simak tips perawatan sederhana yang bisa kamu lakukan sendiri.</div>
+            <div class="artikel-meta">
+              <span>📅 10 Mar 2026</span>
+              <span>3 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="artikel-card" data-kat="bengkel" onclick="bukaModal('modal6')">
+          <div class="artikel-thumb" style="background: #f3e5f5;">🏪</div>
+          <div class="artikel-body">
+            <div class="artikel-cat">Info bengkel</div>
+            <div class="artikel-judul">Jadwal dan tarif servis di bengkel Moto+</div>
+            <div class="artikel-desc">Informasi lengkap jam operasional, daftar layanan, dan estimasi biaya servis di bengkel Moto+ untuk semua jenis motor.</div>
+            <div class="artikel-meta">
+              <span>📅 5 Mar 2026</span>
+              <span>2 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="artikel-card" data-kat="perawatan" onclick="bukaModal('modal7')">
+          <div class="artikel-thumb" style="background: #e0f7fa;">🛞</div>
+          <div class="artikel-body">
+            <div class="artikel-cat">Perawatan</div>
+            <div class="artikel-judul">Kapan waktunya ganti ban motor? Ini tandanya</div>
+            <div class="artikel-desc">Ban aus bisa berbahaya saat berkendara. Kenali tanda-tanda ban yang sudah harus diganti sebelum terlambat.</div>
+            <div class="artikel-meta">
+              <span>📅 1 Mar 2026</span>
+              <span>3 mnt baca</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Kosong kalau filter tidak ada hasil -->
+      <div id="artikel-kosong" style="display:none; text-align:center; padding:60px 0; color:var(--text-gray);">
+        <div style="font-size:48px; margin-bottom:12px;">📭</div>
+        <p style="font-size:16px; font-weight:600;">Artikel tidak ditemukan</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Moto+ — Showroom & Bengkel Motor Terpercaya</p>
+    <p style="margin-top: 4px;">Jl. Otomotif Raya No. 88 · (021) 555-1234</p>
+  </footer>
+
+  <!-- Tombol WA Floating -->
+  <a href="https://wa.me/6281910888220?text=Halo%20Admin%20Moto%2B!%20Saya%20ingin%20bertanya%20seputar%20tips%20otomotif.%20Bisa%20dibantu%3F"
+     target="_blank"
+     title="Chat WhatsApp Admin"
+     style="position:fixed; bottom:28px; right:28px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(37,211,102,0.45); z-index:9999; transition:transform 0.2s;"
+     onmouseover="this.style.transform='scale(1.12)'"
+     onmouseout="this.style.transform='scale(1)'">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.198-1.625A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 012.106 12C2.106 6.533 6.533 2.106 12 2.106c5.466 0 9.894 4.427 9.894 9.894 0 5.466-4.428 9.894-9.894 9.894z"/>
+    </svg>
+  </a>
+
+  <!-- ===== MODAL ARTIKEL ===== -->
+
+  <!-- Modal 1: Panduan beli motor bekas -->
+  <div class="modal-backdrop" id="modal1" onclick="tutupModalLuar(event, 'modal1')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal1')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Panduan beli</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">Panduan lengkap membeli motor bekas untuk pemula</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 1 April 2026 · 7 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Membeli motor bekas bisa menjadi keputusan finansial yang cerdas jika dilakukan dengan benar. Harga yang lebih terjangkau dibanding motor baru menjadi daya tarik utama, namun ada beberapa hal penting yang harus kamu perhatikan agar tidak menyesal.</p>
+        <h3>1. Tentukan budget dan kebutuhan</h3>
+        <p>Sebelum mulai mencari, tentukan terlebih dahulu anggaran maksimal dan untuk apa motor akan digunakan — harian, touring, atau sekadar kendaraan cadangan. Ini akan mempersempit pilihan dan mempermudah proses pencarian.</p>
+        <h3>2. Cek kondisi fisik secara menyeluruh</h3>
+        <ul>
+          <li>Periksa bodi motor — ada penyok, retak, atau cat belang tidak?</li>
+          <li>Cek nomor rangka dan nomor mesin, pastikan sesuai BPKB & STNK</li>
+          <li>Perhatikan kondisi ban, rem, rantai, dan lampu</li>
+          <li>Lihat kondisi speedometer — odometer tidak bisa dimanipulasi di motor digital</li>
+        </ul>
+        <h3>3. Test ride sebelum membeli</h3>
+        <p>Selalu minta izin untuk test ride minimal 10-15 menit. Rasakan tarikan mesin, respons rem, getaran setang, dan bunyi tidak normal. Mesin yang sehat tidak akan berbunyi kasar atau brebet saat digas.</p>
+        <h3>4. Verifikasi dokumen</h3>
+        <p>Pastikan STNK aktif (tidak mati pajak lebih dari 2 tahun), BPKB asli atas nama penjual atau ada surat kuasa jual, dan nomor rangka/mesin sesuai. Jangan beli motor tanpa kelengkapan dokumen.</p>
+        <h3>5. Beli di tempat terpercaya</h3>
+        <p>Membeli di showroom resmi seperti Moto+ memberikan keuntungan tambahan — motor sudah melalui inspeksi ketat, dokumen lengkap, dan kamu bisa langsung servis di bengkel kami jika diperlukan.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: 5 tanda motor perlu servis -->
+  <div class="modal-backdrop" id="modal2" onclick="tutupModalLuar(event, 'modal2')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal2')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Tips & trik</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">5 tanda motor bekas perlu segera diservis</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 25 Mar 2026 · 3 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Motor bekas yang tidak rutin diservis bisa menjadi bom waktu. Kenali 5 tanda berikut agar kamu bisa segera membawa motor ke bengkel sebelum kerusakan makin parah.</p>
+        <h3>1. Mesin sulit dinyalakan</h3>
+        <p>Jika motor butuh lebih dari 3 kali kick starter atau tombol starter untuk menyala, kemungkinan besar ada masalah pada busi, karburator, atau aki yang mulai lemah.</p>
+        <h3>2. Konsumsi bahan bakar meningkat drastis</h3>
+        <p>Motor yang tiba-tiba boros BBM bisa disebabkan oleh setelan karburator yang tidak pas, filter udara kotor, atau kebocoran kecil pada sistem bahan bakar.</p>
+        <h3>3. Muncul bunyi tidak normal</h3>
+        <p>Bunyi "tok-tok", "krek-krek", atau suara kasar dari mesin saat motor berjalan adalah tanda ada komponen yang aus atau longgar di dalam mesin.</p>
+        <h3>4. Getaran berlebihan</h3>
+        <p>Getaran yang lebih kuat dari biasanya saat motor berjalan bisa disebabkan oleh baut yang longgar, rantai kendur, atau masalah pada sistem pengapian.</p>
+        <h3>5. Asap knalpot berwarna putih atau hitam</h3>
+        <p>Asap putih menandakan oli terbakar di ruang mesin, sementara asap hitam menandakan pembakaran tidak sempurna. Keduanya perlu penanganan segera di bengkel.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Tips nego -->
+  <div class="modal-backdrop" id="modal3" onclick="tutupModalLuar(event, 'modal3')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal3')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Panduan beli</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">Tips nego harga motor bekas agar tidak kemahalan</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 20 Mar 2026 · 5 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Negosiasi harga adalah bagian penting dalam membeli motor bekas. Dengan strategi yang tepat, kamu bisa mendapatkan harga terbaik tanpa membuat penjual tersinggung.</p>
+        <h3>Riset harga pasar terlebih dahulu</h3>
+        <p>Gunakan fitur estimasi harga di website Moto+ atau cek platform seperti OLX dan Carmudi untuk mengetahui kisaran harga wajar motor yang ingin kamu beli. Data ini adalah senjata utama dalam negosiasi.</p>
+        <h3>Temukan kekurangan sebagai bahan negosiasi</h3>
+        <ul>
+          <li>Cat pudar atau ada goresan kecil</li>
+          <li>Pajak hampir jatuh tempo</li>
+          <li>Kilometer yang sudah cukup tinggi</li>
+          <li>Aksesori yang kurang lengkap</li>
+        </ul>
+        <h3>Tawar dengan sopan dan masuk akal</h3>
+        <p>Mulai penawaran di 10-15% di bawah harga yang ditawarkan. Jangan terlalu rendah karena bisa menyinggung penjual. Berikan alasan konkret untuk setiap permintaan penurunan harga.</p>
+        <h3>Manfaatkan posisi pembeli tunai</h3>
+        <p>Jika kamu membayar tunai, sebutkan hal ini di awal negosiasi. Penjual biasanya lebih fleksibel menurunkan harga untuk pembeli tunai karena prosesnya lebih cepat dan pasti.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Dokumen motor -->
+  <div class="modal-backdrop" id="modal4" onclick="tutupModalLuar(event, 'modal4')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal4')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Panduan beli</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">Dokumen apa saja yang wajib dicek saat beli motor bekas?</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 15 Mar 2026 · 4 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Membeli motor bekas tanpa mengecek dokumen adalah kesalahan fatal. Berikut dokumen yang wajib kamu verifikasi sebelum melakukan transaksi.</p>
+        <h3>STNK (Surat Tanda Nomor Kendaraan)</h3>
+        <ul>
+          <li>Pastikan nama di STNK sesuai dengan KTP penjual</li>
+          <li>Cek tanggal pajak — jangan beli motor dengan pajak mati lebih dari 2 tahun</li>
+          <li>Cocokkan nomor polisi, nomor rangka, dan nomor mesin dengan fisik motor</li>
+        </ul>
+        <h3>BPKB (Buku Pemilik Kendaraan Bermotor)</h3>
+        <ul>
+          <li>Minta BPKB asli, bukan fotokopi</li>
+          <li>Pastikan BPKB tidak dalam status dijaminkan ke leasing</li>
+          <li>Cek kesesuaian data dengan STNK dan fisik motor</li>
+        </ul>
+        <h3>Jika penjual bukan nama di BPKB</h3>
+        <p>Minta surat kuasa jual bermaterai dari pemilik asli. Ini penting untuk proses balik nama nantinya. Tanpa ini, proses balik nama tidak bisa dilakukan.</p>
+        <h3>Cek di Samsat</h3>
+        <p>Untuk memastikan motor bukan hasil curian atau tidak bermasalah secara hukum, kamu bisa cek status kendaraan di website resmi Samsat daerahmu atau langsung datang ke kantor Samsat terdekat.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Perawatan aki -->
+  <div class="modal-backdrop" id="modal5" onclick="tutupModalLuar(event, 'modal5')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal5')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Perawatan</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">Cara merawat aki motor agar tahan lebih lama</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 10 Mar 2026 · 3 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Aki motor yang terawat dengan baik bisa bertahan hingga 2-3 tahun. Berikut tips perawatan sederhana yang bisa kamu lakukan sendiri di rumah.</p>
+        <h3>Rutin panaskan motor setiap hari</h3>
+        <p>Memanaskan motor minimal 5-10 menit setiap hari membantu menjaga kondisi aki tetap terisi. Motor yang jarang dipakai dan tidak dipanaskan akan membuat aki cepat soak.</p>
+        <h3>Hindari penggunaan aksesori listrik berlebihan</h3>
+        <p>Klakson tambahan, lampu LED aftermarket, atau charger HP yang dihubungkan langsung ke aki bisa mempercepat kerusakan. Pastikan total beban listrik tidak melebihi kapasitas aki.</p>
+        <h3>Cek air aki secara berkala (aki basah)</h3>
+        <ul>
+          <li>Periksa level air aki setiap 1-2 bulan</li>
+          <li>Tambahkan air aki (bukan air zuur) jika level di bawah batas minimum</li>
+          <li>Bersihkan terminal aki dari kerak putih menggunakan sikat kawat</li>
+        </ul>
+        <h3>Ganti aki sebelum benar-benar mati</h3>
+        <p>Jika starter motor mulai terasa berat dan lampu redup saat mesin hidup, segera ganti aki. Memaksa aki yang sudah lemah bisa merusak komponen kelistrikan lainnya.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Info bengkel -->
+  <div class="modal-backdrop" id="modal6" onclick="tutupModalLuar(event, 'modal6')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal6')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Info bengkel</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">Jadwal dan tarif servis di bengkel Moto+</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 5 Mar 2026 · 2 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Bengkel Moto+ melayani berbagai jenis servis motor dengan teknisi berpengalaman dan spare part original. Berikut informasi lengkap jadwal dan tarif kami.</p>
+        <h3>Jam operasional</h3>
+        <ul>
+          <li>Senin – Jumat: 08.00 – 17.00 WIB</li>
+          <li>Sabtu: 08.00 – 15.00 WIB</li>
+          <li>Minggu & hari libur nasional: Tutup</li>
+        </ul>
+        <h3>Daftar layanan & estimasi tarif</h3>
+        <ul>
+          <li>Servis rutin: mulai Rp 75.000</li>
+          <li>Ganti oli: mulai Rp 50.000 (belum termasuk oli)</li>
+          <li>Tune up lengkap: mulai Rp 120.000</li>
+          <li>Rem & ban: mulai Rp 80.000 (belum termasuk spare part)</li>
+          <li>Kelistrikan: mulai Rp 60.000</li>
+          <li>Konsultasi: Gratis</li>
+        </ul>
+        <h3>Cara booking servis</h3>
+        <p>Kamu bisa booking servis langsung melalui halaman Bengkel di website ini, atau hubungi kami via WhatsApp. Booking di awal membantu kami mempersiapkan teknisi dan spare part yang dibutuhkan.</p>
+        <div style="margin-top:20px; text-align:center;">
+          <a href="bengkel.html" class="btn btn-primary" style="padding: 12px 28px;">Booking sekarang</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: Ganti ban -->
+  <div class="modal-backdrop" id="modal7" onclick="tutupModalLuar(event, 'modal7')">
+    <div class="modal-box">
+      <div class="modal-header">
+        <button class="modal-close" onclick="tutupModal('modal7')">✕</button>
+        <div class="artikel-cat" style="color:var(--primary); font-size:11px; font-weight:700; text-transform:uppercase; margin-bottom:8px;">Perawatan</div>
+        <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">Kapan waktunya ganti ban motor? Ini tandanya</h2>
+        <p style="font-size:12px; color:var(--text-light); margin-bottom:0;">📅 1 Mar 2026 · 3 mnt baca</p>
+      </div>
+      <div class="modal-body">
+        <p>Ban adalah satu-satunya bagian motor yang menyentuh jalan. Kondisi ban yang buruk sangat berbahaya, terutama saat hujan atau menikung. Kenali tanda-tanda ban yang sudah harus diganti.</p>
+        <h3>Indikator keausan (TWI) sudah terlihat</h3>
+        <p>Setiap ban memiliki tanda TWI (Tread Wear Indicator) berupa segitiga kecil di bagian samping ban. Jika alur ban sudah rata dengan tanda ini, ban harus segera diganti.</p>
+        <h3>Usia ban lebih dari 3-4 tahun</h3>
+        <p>Meski masih terlihat baik, karet ban mengeras seiring waktu dan kehilangan grip-nya. Ban berusia lebih dari 3-4 tahun sebaiknya diganti meski belum aus.</p>
+        <h3>Ada retak atau benjolan di ban</h3>
+        <ul>
+          <li>Retak di dinding ban menandakan karet sudah mengeras dan rapuh</li>
+          <li>Benjolan (blister) menandakan lapisan dalam ban rusak dan berbahaya pecah sewaktu-waktu</li>
+          <li>Ban yang pernah ditambal lebih dari 2 kali sebaiknya diganti</li>
+        </ul>
+        <h3>Motor terasa tidak stabil</h3>
+        <p>Jika motor terasa limbung atau menarik ke satu sisi saat jalan lurus, bisa jadi salah satu ban sudah aus tidak merata atau tekanan angin tidak seimbang karena ban bocor halus.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+  <script>
+    function filterArtikel(kat, btn) {
+      document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cards = document.querySelectorAll('.artikel-card');
+      let ada = false;
+      cards.forEach(card => {
+        const cocok = kat === 'semua' || card.getAttribute('data-kat') === kat;
+        card.style.display = cocok ? 'block' : 'none';
+        if (cocok) ada = true;
+      });
+      document.getElementById('artikel-kosong').style.display = ada ? 'none' : 'block';
+    }
+
+    function bukaModal(id) {
+      document.getElementById(id).classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function tutupModal(id) {
+      document.getElementById(id).classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    function tutupModalLuar(event, id) {
+      if (event.target === document.getElementById(id)) tutupModal(id);
+    }
+
+    // Tutup modal dengan tombol Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.show').forEach(m => {
+          m.classList.remove('show');
+          document.body.style.overflow = '';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

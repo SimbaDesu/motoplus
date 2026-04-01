@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Bengkel — Moto+</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .layanan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .layanan-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .layanan-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .layanan-card.selected { border-color: var(--primary); background: var(--primary-light); }
+    .layanan-card .ikon { font-size: 32px; margin-bottom: 8px; }
+    .layanan-card .nama { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+    .layanan-card .harga { font-size: 12px; color: var(--primary); font-weight: 600; margin-top: 4px; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-gray);
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .step-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .step.active .step-circle { background: var(--primary); color: white; }
+    .step.done .step-circle { background: #22c55e; color: white; }
+    .step-label { font-size: 11px; color: var(--text-gray); font-weight: 600; }
+    .step.active .step-label { color: var(--primary); }
+    .step-line {
+      width: 60px;
+      height: 2px;
+      background: var(--border);
+      margin-bottom: 20px;
+      transition: background 0.3s;
+    }
+    .step-line.done { background: #22c55e; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .riwayat-item {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-selesai { background: #dcfce7; color: #15803d; }
+    .status-proses  { background: #fef9c3; color: #a16207; }
+    .status-antri   { background: #e0f2fe; color: #0369a1; }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .loading-overlay.show { display: flex; }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <span class="logo-dot"></span>
+      Moto+
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="katalog.html">Katalog</a></li>
+      <li><a href="bengkel.html" class="active">Bengkel</a></li>
+      <li><a href="blog.html">Artikel</a></li>
+    </ul>
+    <a href="bengkel.html" class="btn btn-primary">Booking Servis</a>
+  </nav>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+    <div>Mengirim booking...</div>
+  </div>
+
+  <!-- HEADER -->
+  <section style="background: white; padding: 40px 0 28px; border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 6px;">Booking servis bengkel</h1>
+      <p style="color: var(--text-gray);">Jadwalkan servis motor kamu dengan mudah, kami siap melayani</p>
+    </div>
+  </section>
+
+  <section style="padding: 48px 0 80px;">
+    <div class="container" style="max-width: 780px;">
+
+      <!-- Tab -->
+      <div style="display: flex; gap: 0; margin-bottom: 36px; border-bottom: 2px solid var(--border);">
+        <button onclick="gantiTab('booking')" id="tab-booking"
+          style="padding: 12px 28px; font-size: 14px; font-weight: 700; border: none; background: none; cursor: pointer; color: var(--primary); border-bottom: 2px solid var(--primary); margin-bottom: -2px;">
+          Booking baru
+        </button>
+        <button onclick="gantiTab('riwayat')" id="tab-riwayat"
+          style="padding: 12px 28px; font-size: 14px; font-weight: 700; border: none; background: none; cursor: pointer; color: var(--text-gray); border-bottom: 2px solid transparent; margin-bottom: -2px;">
+          Riwayat servis
+        </button>
+      </div>
+
+      <!-- PANEL BOOKING -->
+      <div id="panel-booking" class="panel active">
+
+        <!-- Step bar -->
+        <div class="step-bar">
+          <div class="step active" id="step1">
+            <div class="step-circle">1</div>
+            <div class="step-label">Layanan</div>
+          </div>
+          <div class="step-line" id="line1"></div>
+          <div class="step" id="step2">
+            <div class="step-circle">2</div>
+            <div class="step-label">Data motor</div>
+          </div>
+          <div class="step-line" id="line2"></div>
+          <div class="step" id="step3">
+            <div class="step-circle">3</div>
+            <div class="step-label">Jadwal</div>
+          </div>
+          <div class="step-line" id="line3"></div>
+          <div class="step" id="step4">
+            <div class="step-circle">4</div>
+            <div class="step-label">Konfirmasi</div>
+          </div>
+        </div>
+
+        <!-- Step 1: Pilih Layanan -->
+        <div id="form-step1" class="panel active">
+          <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Pilih jenis layanan</h2>
+          <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">Pilih satu atau lebih layanan yang kamu butuhkan</p>
+          <div class="layanan-grid">
+            <div class="layanan-card" onclick="pilihLayanan(this, 'Servis Rutin')">
+              <div class="ikon">🔧</div>
+              <div class="nama">Servis rutin</div>
+              <div class="harga">Mulai Rp 75.000</div>
+            </div>
+            <div class="layanan-card" onclick="pilihLayanan(this, 'Ganti Oli')">
+              <div class="ikon">🛢️</div>
+              <div class="nama">Ganti oli</div>
+              <div class="harga">Mulai Rp 50.000</div>
+            </div>
+            <div class="layanan-card" onclick="pilihLayanan(this, 'Tune Up')">
+              <div class="ikon">⚙️</div>
+              <div class="nama">Tune up</div>
+              <div class="harga">Mulai Rp 120.000</div>
+            </div>
+            <div class="layanan-card" onclick="pilihLayanan(this, 'Rem & Ban')">
+              <div class="ikon">🛞</div>
+              <div class="nama">Rem & ban</div>
+              <div class="harga">Mulai Rp 80.000</div>
+            </div>
+            <div class="layanan-card" onclick="pilihLayanan(this, 'Kelistrikan')">
+              <div class="ikon">⚡</div>
+              <div class="nama">Kelistrikan</div>
+              <div class="harga">Mulai Rp 60.000</div>
+            </div>
+            <div class="layanan-card" onclick="pilihLayanan(this, 'Konsultasi')">
+              <div class="ikon">💬</div>
+              <div class="nama">Konsultasi</div>
+              <div class="harga">Gratis</div>
+            </div>
+          </div>
+          <div id="error-layanan" style="display:none; color:#dc2626; font-size:13px; margin-bottom:12px;">
+            ⚠️ Pilih minimal satu layanan terlebih dahulu.
+          </div>
+          <button class="btn btn-primary" style="width:100%; padding:13px;" onclick="nextStep(2)">Lanjut →</button>
+        </div>
+
+        <!-- Step 2: Data Motor -->
+        <div id="form-step2" class="panel">
+          <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Data diri & motor</h2>
+          <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">Isi informasi berikut dengan lengkap</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nama lengkap *</label>
+              <input type="text" id="nama" placeholder="Contoh: Ahmad Rizki">
+            </div>
+            <div class="form-group">
+              <label>Nomor HP *</label>
+              <input type="tel" id="nohp" placeholder="Contoh: 0812-3456-7890">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Merek motor *</label>
+              <select id="merek-motor">
+                <option value="">Pilih merek</option>
+                <option>Honda</option>
+                <option>Yamaha</option>
+                <option>Suzuki</option>
+                <option>Kawasaki</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tipe / model *</label>
+              <input type="text" id="tipe-motor" placeholder="Contoh: Vario 150, NMAX">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tahun motor *</label>
+              <select id="tahun-motor">
+                <option value="">Pilih tahun</option>
+                <option>2024</option><option>2023</option><option>2022</option>
+                <option>2021</option><option>2020</option><option>2019</option>
+                <option>2018</option><option>2017</option><option>2016</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Plat nomor</label>
+              <input type="text" id="plat" placeholder="Contoh: B 1234 ABC">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Keluhan / catatan tambahan</label>
+            <textarea id="keluhan" rows="3" placeholder="Contoh: Mesin berbunyi kasar saat pagi hari..."></textarea>
+          </div>
+          <div id="error-data" style="display:none; color:#dc2626; font-size:13px; margin-bottom:12px;">
+            ⚠️ Harap isi nama, nomor HP, merek, tipe, dan tahun motor.
+          </div>
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-outline" style="flex:1; padding:13px;" onclick="prevStep(1)">← Kembali</button>
+            <button class="btn btn-primary" style="flex:2; padding:13px;" onclick="nextStep(3)">Lanjut →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Jadwal -->
+        <div id="form-step3" class="panel">
+          <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Pilih jadwal servis</h2>
+          <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">Pilih tanggal dan jam yang tersedia</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tanggal servis *</label>
+              <input type="date" id="tanggal">
+            </div>
+            <div class="form-group">
+              <label>Jam servis *</label>
+              <select id="jam">
+                <option value="">Pilih jam</option>
+                <option>08:00 – 09:00</option>
+                <option>09:00 – 10:00</option>
+                <option>10:00 – 11:00</option>
+                <option>11:00 – 12:00</option>
+                <option>13:00 – 14:00</option>
+                <option>14:00 – 15:00</option>
+                <option>15:00 – 16:00</option>
+              </select>
+            </div>
+          </div>
+          <div style="background: var(--primary-light); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 20px; font-size: 13px; color: var(--primary-dark);">
+            📍 <strong>Alamat bengkel:</strong> Jl. Otomotif Raya No. 88 · Buka Senin–Sabtu, 08.00–17.00
+          </div>
+          <div id="error-jadwal" style="display:none; color:#dc2626; font-size:13px; margin-bottom:12px;">
+            ⚠️ Pilih tanggal dan jam terlebih dahulu.
+          </div>
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-outline" style="flex:1; padding:13px;" onclick="prevStep(2)">← Kembali</button>
+            <button class="btn btn-primary" style="flex:2; padding:13px;" onclick="nextStep(4)">Lanjut →</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Konfirmasi -->
+        <div id="form-step4" class="panel">
+          <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">Konfirmasi booking</h2>
+          <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 24px;">Cek kembali detail booking kamu</p>
+          <div style="background: var(--bg-gray); border-radius: var(--radius-md); padding: 24px; margin-bottom: 24px;">
+            <table style="width:100%; font-size:14px; border-collapse:collapse;">
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray); width:140px;">Layanan</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-layanan">—</td>
+              </tr>
+              <tr><td colspan="2"><hr style="border:none; border-top:1px solid var(--border); margin:4px 0;"></td></tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray);">Nama</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-nama">—</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray);">Nomor HP</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-hp">—</td>
+              </tr>
+              <tr><td colspan="2"><hr style="border:none; border-top:1px solid var(--border); margin:4px 0;"></td></tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray);">Motor</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-motor">—</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray);">Keluhan</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-keluhan">—</td>
+              </tr>
+              <tr><td colspan="2"><hr style="border:none; border-top:1px solid var(--border); margin:4px 0;"></td></tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray);">Tanggal</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-tanggal">—</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0; color:var(--text-gray);">Jam</td>
+                <td style="padding:8px 0; font-weight:600;" id="konfirm-jam">—</td>
+              </tr>
+            </table>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn-outline" style="flex:1; padding:13px;" onclick="prevStep(3)">← Kembali</button>
+            <button class="btn btn-primary" style="flex:2; padding:13px; background:#25D366; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="kirimBooking()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.198-1.625A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 012.106 12C2.106 6.533 6.533 2.106 12 2.106c5.466 0 9.894 4.427 9.894 9.894 0 5.466-4.428 9.894-9.894 9.894z"/>
+              </svg>
+              Konfirmasi & Kirim Booking
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 5: Sukses -->
+        <div id="form-step5" class="panel" style="text-align:center; padding:40px 0;">
+          <div style="font-size:64px; margin-bottom:16px;">✅</div>
+          <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Booking berhasil!</h2>
+          <p style="color:var(--text-gray); margin-bottom:8px;">Data kamu sudah tercatat di sistem kami.</p>
+          <p style="color:var(--text-gray); margin-bottom:28px;">Tim kami akan menghubungi kamu untuk konfirmasi jadwal.</p>
+          <div style="display:flex; gap:12px; justify-content:center;">
+            <a href="index.html" class="btn btn-outline" style="padding:12px 24px;">Kembali ke beranda</a>
+            <button class="btn btn-primary" style="padding:12px 24px;" onclick="resetBooking()">Booking lagi</button>
+          </div>
+        </div>
+
+      </div>
+
+ <!-- PANEL RIWAYAT -->
+<div id="panel-riwayat" class="panel">
+  <h2 style="font-size:18px; font-weight:700; margin-bottom:20px;">Riwayat servis</h2>
+  <div style="text-align:center; padding: 60px 0; color: var(--text-gray);">
+    <div style="font-size: 56px; margin-bottom: 16px;">🔧</div>
+    <p style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">Belum ada riwayat servis</p>
+    <p style="font-size: 14px;">Riwayat servis akan muncul setelah kamu melakukan booking</p>
+  </div>
+</div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2026 Moto+ — Showroom & Bengkel Motor Terpercaya</p>
+    <p style="margin-top:4px;">Jl. Otomotif Raya No. 88 · (021) 555-1234</p>
+  </footer>
+
+  <!-- Tombol WA Floating -->
+  <a href="https://wa.me/6281910888220?text=Halo%20Admin%20Moto%2B!%20Saya%20ingin%20menanyakan%20jadwal%20servis%20di%20bengkel.%20Bisa%20dibantu%3F"
+     target="_blank"
+     title="Chat WhatsApp Admin"
+     style="position:fixed; bottom:28px; right:28px; width:56px; height:56px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 16px rgba(37,211,102,0.45); z-index:9999; transition:transform 0.2s;"
+     onmouseover="this.style.transform='scale(1.12)'"
+     onmouseout="this.style.transform='scale(1)'">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.198-1.625A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 012.106 12C2.106 6.533 6.533 2.106 12 2.106c5.466 0 9.894 4.427 9.894 9.894 0 5.466-4.428 9.894-9.894 9.894z"/>
+    </svg>
+  </a>
+
+  <script src="js/script.js"></script>
+  <script>
+    // ⚠️ GANTI dengan URL Apps Script kamu setelah deploy
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4_XNbOhvIeZrjtUpwJqrdHPBSrqttvFXrSBdanEfMOQy_nTM4AUrNx1bwZTlB7E08GQ/exec';
+    const NOMOR_WA = '6281910888220';
+
+    let layananDipilih = [];
+
+    document.getElementById('tanggal').min = new Date().toISOString().split('T')[0];
+
+    function gantiTab(tab) {
+      document.getElementById('panel-booking').classList.toggle('active', tab === 'booking');
+      document.getElementById('panel-riwayat').classList.toggle('active', tab === 'riwayat');
+      document.getElementById('tab-booking').style.color = tab === 'booking' ? 'var(--primary)' : 'var(--text-gray)';
+      document.getElementById('tab-booking').style.borderBottomColor = tab === 'booking' ? 'var(--primary)' : 'transparent';
+      document.getElementById('tab-riwayat').style.color = tab === 'riwayat' ? 'var(--primary)' : 'var(--text-gray)';
+      document.getElementById('tab-riwayat').style.borderBottomColor = tab === 'riwayat' ? 'var(--primary)' : 'transparent';
+    }
+
+    function pilihLayanan(el, nama) {
+      el.classList.toggle('selected');
+      if (el.classList.contains('selected')) {
+        if (!layananDipilih.includes(nama)) layananDipilih.push(nama);
+      } else {
+        layananDipilih = layananDipilih.filter(l => l !== nama);
+      }
+    }
+
+    function nextStep(target) {
+      if (target === 2 && layananDipilih.length === 0) {
+        document.getElementById('error-layanan').style.display = 'block';
+        return;
+      }
+      document.getElementById('error-layanan').style.display = 'none';
+
+      if (target === 3) {
+        const nama  = document.getElementById('nama').value.trim();
+        const nohp  = document.getElementById('nohp').value.trim();
+        const merek = document.getElementById('merek-motor').value;
+        const tipe  = document.getElementById('tipe-motor').value.trim();
+        const tahun = document.getElementById('tahun-motor').value;
+        if (!nama || !nohp || !merek || !tipe || !tahun) {
+          document.getElementById('error-data').style.display = 'block';
+          return;
+        }
+        document.getElementById('error-data').style.display = 'none';
+      }
+
+      if (target === 4) {
+        const tgl = document.getElementById('tanggal').value;
+        const jam = document.getElementById('jam').value;
+        if (!tgl || !jam) {
+          document.getElementById('error-jadwal').style.display = 'block';
+          return;
+        }
+        document.getElementById('error-jadwal').style.display = 'none';
+        isiKonfirmasi();
+      }
+
+      tampilStep(target);
+    }
+
+    function prevStep(target) { tampilStep(target); }
+
+    function tampilStep(target) {
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`form-step${i}`).classList.toggle('active', i === target);
+        const stepEl = document.getElementById(`step${i}`);
+        stepEl.classList.remove('active', 'done');
+        if (i === target) stepEl.classList.add('active');
+        else if (i < target) stepEl.classList.add('done');
+      }
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`line${i}`).classList.toggle('done', i < target);
+      }
+    }
+
+    function isiKonfirmasi() {
+      const tgl = new Date(document.getElementById('tanggal').value);
+      const tglFormatted = tgl.toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+      document.getElementById('konfirm-layanan').textContent  = layananDipilih.join(', ');
+      document.getElementById('konfirm-nama').textContent     = document.getElementById('nama').value;
+      document.getElementById('konfirm-hp').textContent       = document.getElementById('nohp').value;
+      document.getElementById('konfirm-motor').textContent    =
+        `${document.getElementById('merek-motor').value} ${document.getElementById('tipe-motor').value} (${document.getElementById('tahun-motor').value}) — ${document.getElementById('plat').value || 'plat tidak diisi'}`;
+      document.getElementById('konfirm-keluhan').textContent  = document.getElementById('keluhan').value || 'Tidak ada';
+      document.getElementById('konfirm-tanggal').textContent  = tglFormatted;
+      document.getElementById('konfirm-jam').textContent      = document.getElementById('jam').value;
+    }
+
+    async function kirimBooking() {
+      // Tampilkan loading
+      document.getElementById('loading').classList.add('show');
+
+      const dataBooking = {
+        nama     : document.getElementById('konfirm-nama').textContent,
+        nohp     : document.getElementById('konfirm-hp').textContent,
+        motor    : document.getElementById('konfirm-motor').textContent,
+        layanan  : document.getElementById('konfirm-layanan').textContent,
+        keluhan  : document.getElementById('konfirm-keluhan').textContent,
+        tanggal  : document.getElementById('konfirm-tanggal').textContent,
+        jam      : document.getElementById('konfirm-jam').textContent
+      };
+
+      // Kirim ke Google Sheets
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method : 'POST',
+          mode   : 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body   : JSON.stringify(dataBooking)
+        });
+      } catch (err) {
+        console.log('Sheets error:', err);
+      }
+
+      // Kirim WA ke admin sekaligus
+      const pesan =
+`Halo Admin Moto+! 👋 Ada booking servis baru masuk.
+
+🔧 *Layanan:* ${dataBooking.layanan}
+👤 *Nama:* ${dataBooking.nama}
+📞 *HP:* ${dataBooking.nohp}
+🏍️ *Motor:* ${dataBooking.motor}
+📝 *Keluhan:* ${dataBooking.keluhan}
+📅 *Tanggal:* ${dataBooking.tanggal}
+⏰ *Jam:* ${dataBooking.jam}
+
+Mohon konfirmasi jadwalnya. Terima kasih!`;
+
+      document.getElementById('loading').classList.remove('show');
+
+      window.open(`https://wa.me/${NOMOR_WA}?text=${encodeURIComponent(pesan)}`, '_blank');
+
+      // Tampilkan halaman sukses
+      for (let i = 1; i <= 4; i++) document.getElementById(`form-step${i}`).classList.remove('active');
+      document.getElementById('form-step5').classList.add('active');
+    }
+
+    function resetBooking() {
+      layananDipilih = [];
+      document.querySelectorAll('.layanan-card').forEach(c => c.classList.remove('selected'));
+      ['nama','nohp','tipe-motor','plat','keluhan','tanggal'].forEach(id => document.getElementById(id).value = '');
+      ['merek-motor','tahun-motor','jam'].forEach(id => document.getElementById(id).selectedIndex = 0);
+      document.getElementById('form-step5').classList.remove('active');
+      tampilStep(1);
+    }
+  </script>
+</body>
+</html>

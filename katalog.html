@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katalog Motor — Moto+</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .filter-btn {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: white;
+      color: var(--text-gray);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .motor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .motor-card {
+      background: white;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .motor-card:hover { transform: translateY(-4px); }
+    .motor-card .img-area {
+      background: var(--bg-gray);
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      position: relative;
+    }
+    .motor-card .info { padding: 18px; }
+    .motor-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .motor-card .spek { font-size: 12px; color: var(--text-gray); margin-bottom: 4px; }
+    .motor-card .km { font-size: 12px; color: var(--text-light); margin-bottom: 12px; }
+    .motor-card .harga { font-size: 20px; font-weight: 800; color: var(--primary); }
+    .motor-card .badge-area { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <span class="logo-dot"></span>
+      Moto+
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="katalog.html" class="active">Katalog</a></li>
+      <li><a href="bengkel.html">Bengkel</a></li>
+      <li><a href="blog.html">Artikel</a></li>
+    </ul>
+    <a href="bengkel.html" class="btn btn-primary">Booking Servis</a>
+  </nav>
+
+  <!-- HEADER HALAMAN -->
+  <section style="background: white; padding: 40px 0 28px; border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 6px;">Katalog motor bekas</h1>
+      <p style="color: var(--text-gray); font-size: 15px;">1–3 unit tersedia, kondisi prima, harga transparan</p>
+    </div>
+  </section>
+
+  <!-- KONTEN KATALOG -->
+  <section style="padding: 40px 0 60px;">
+    <div class="container">
+
+      <!-- Filter & Search -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px;">
+        <div class="filter-bar" style="margin-bottom: 0;">
+          <button class="filter-btn active" onclick="filterMotor('semua', this)">Semua</button>
+          <button class="filter-btn" onclick="filterMotor('matic', this)">Matic</button>
+          <button class="filter-btn" onclick="filterMotor('sport', this)">Sport</button>
+          <button class="filter-btn" onclick="filterMotor('bebek', this)">Bebek</button>
+        </div>
+        <input type="text" placeholder="🔍  Cari merek atau model..."
+          oninput="cariMotor(this.value)"
+          style="padding: 10px 16px; border: 1.5px solid var(--border); border-radius: 20px; font-size: 14px; width: 260px; outline: none;">
+      </div>
+
+      <!-- Grid Motor -->
+      <div class="motor-grid" id="motor-grid">
+
+        <div class="motor-card" data-tipe="matic" data-nama="honda vario 150">
+          <div class="img-area">
+            🏍️
+            <div class="badge-area">
+              <span class="badge badge-hot">Populer</span>
+            </div>
+          </div>
+          <div class="info">
+            <h3>Honda Vario 150</h3>
+            <p class="spek">2021 · Matic · Merah</p>
+            <p class="km">🛣️ 12.400 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 17,5 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="matic" data-nama="yamaha nmax">
+          <div class="img-area">
+            🏍️
+            <div class="badge-area">
+              <span class="badge badge-new">Baru masuk</span>
+            </div>
+          </div>
+          <div class="info">
+            <h3>Yamaha NMAX</h3>
+            <p class="spek">2020 · Matic · Hitam</p>
+            <p class="km">🛣️ 8.900 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 22,0 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="sport" data-nama="yamaha r15">
+          <div class="img-area">🏍️</div>
+          <div class="info">
+            <h3>Yamaha R15</h3>
+            <p class="spek">2019 · Sport · Biru</p>
+            <p class="km">🛣️ 19.200 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 24,0 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="matic" data-nama="honda beat">
+          <div class="img-area">🏍️</div>
+          <div class="info">
+            <h3>Honda Beat</h3>
+            <p class="spek">2022 · Matic · Putih</p>
+            <p class="km">🛣️ 6.800 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 13,5 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="sport" data-nama="kawasaki ninja 250">
+          <div class="img-area">
+            🏍️
+            <div class="badge-area">
+              <span class="badge badge-hot">Populer</span>
+            </div>
+          </div>
+          <div class="info">
+            <h3>Kawasaki Ninja 250</h3>
+            <p class="spek">2020 · Sport · Hijau</p>
+            <p class="km">🛣️ 14.500 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 38,0 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="bebek" data-nama="honda revo">
+          <div class="img-area">🏍️</div>
+          <div class="info">
+            <h3>Honda Revo</h3>
+            <p class="spek">2018 · Bebek · Hitam</p>
+            <p class="km">🛣️ 22.000 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 8,5 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="matic" data-nama="honda pcx 160">
+          <div class="img-area">
+            🏍️
+            <div class="badge-area">
+              <span class="badge badge-new">Baru masuk</span>
+            </div>
+          </div>
+          <div class="info">
+            <h3>Honda PCX 160</h3>
+            <p class="spek">2023 · Matic · Putih</p>
+            <p class="km">🛣️ 4.200 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 28,0 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="sport" data-nama="honda cb150r">
+          <div class="img-area">🏍️</div>
+          <div class="info">
+            <h3>Honda CB150R</h3>
+            <p class="spek">2021 · Sport · Merah</p>
+            <p class="km">🛣️ 11.300 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 21,0 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="motor-card" data-tipe="bebek" data-nama="yamaha jupiter mx">
+          <div class="img-area">🏍️</div>
+          <div class="info">
+            <h3>Yamaha Jupiter MX</h3>
+            <p class="spek">2017 · Bebek · Biru</p>
+            <p class="km">🛣️ 31.000 km</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="harga">Rp 7,0 jt</div>
+              <a href="bengkel.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px;">Tanya</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pesan kalau tidak ada hasil -->
+      <div id="tidak-ada" style="display:none; text-align: center; padding: 60px 0; color: var(--text-gray);">
+        <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
+        <p style="font-size: 16px; font-weight: 600;">Motor tidak ditemukan</p>
+        <p style="font-size: 14px;">Coba kata kunci atau filter lain</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>© 2025 Moto+ — Showroom & Bengkel Motor Terpercaya</p>
+    <p style="margin-top: 4px;">Jl. Otomotif Raya No. 88 · (021) 555-1234</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    let filterAktif = 'semua';
+
+    function filterMotor(tipe, btn) {
+      filterAktif = tipe;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      tampilkanMotor();
+    }
+
+    function cariMotor(keyword) {
+      tampilkanMotor(keyword.toLowerCase());
+    }
+
+    function tampilkanMotor(keyword = '') {
+      const cards = document.querySelectorAll('.motor-card');
+      let ada = false;
+      cards.forEach(card => {
+        const tipe = card.getAttribute('data-tipe');
+        const nama = card.getAttribute('data-nama');
+        const cocokFilter = filterAktif === 'semua' || tipe === filterAktif;
+        const cocokCari = nama.includes(keyword);
+        if (cocokFilter && cocokCari) {
+          card.classList.remove('hidden');
+          ada = true;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+      document.getElementById('tidak-ada').style.display = ada ? 'none' : 'block';
+    }
+  </script>
+  <!-- Tombol WA Floating -->
+<a href="https://wa.me/6281910888220" target="_blank"
+   title="Chat WhatsApp Admin"
+   style="
+     position: fixed;
+     bottom: 28px;
+     right: 28px;
+     width: 56px;
+     height: 56px;
+     background: #25D366;
+     border-radius: 50%;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     box-shadow: 0 4px 16px rgba(37,211,102,0.45);
+     z-index: 9999;
+     transition: transform 0.2s;
+   "
+   onmouseover="this.style.transform='scale(1.12)'"
+   onmouseout="this.style.transform='scale(1)'">
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.882l6.198-1.625A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.981.999-3.648-.235-.374A9.861 9.861 0 012.106 12C2.106 6.533 6.533 2.106 12 2.106c5.466 0 9.894 4.427 9.894 9.894 0 5.466-4.428 9.894-9.894 9.894z"/>
+  </svg>
+</a>
+</body>
+</html>
