@@ -437,7 +437,7 @@
   <script src="js/script.js"></script>
   <script>
     // ⚠️ GANTI dengan URL Apps Script kamu setelah deploy
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4_XNbOhvIeZrjtUpwJqrdHPBSrqttvFXrSBdanEfMOQy_nTM4AUrNx1bwZTlB7E08GQ/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzotuqeq0Y2wdvbP7EGRY8eP6cCpHEO-dUXGuZs9fk/dev';
     const NOMOR_WA = '6281910888220';
 
     let layananDipilih = [];
@@ -535,16 +535,16 @@
         layanan  : document.getElementById('konfirm-layanan').textContent,
         keluhan  : document.getElementById('konfirm-keluhan').textContent,
         tanggal  : document.getElementById('konfirm-tanggal').textContent,
-        jam      : document.getElementById('konfirm-jam').textContent
+        jam      : document.getElementById('konfirm-jam').textContent,
+        timestamp: new Date().toLocaleString('id-ID')
       };
 
-      // Kirim ke Google Sheets
+      // Kirim ke Google Sheets via GET (kompatibel dengan Apps Script no-cors)
       try {
-        await fetch(APPS_SCRIPT_URL, {
-          method : 'POST',
-          mode   : 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body   : JSON.stringify(dataBooking)
+        const params = new URLSearchParams(dataBooking);
+        await fetch(APPS_SCRIPT_URL + '?' + params.toString(), {
+          method : 'GET',
+          mode   : 'no-cors'
         });
       } catch (err) {
         console.log('Sheets error:', err);
