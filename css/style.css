@@ -1,8 +1,4 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
   --primary: #E85D24;
@@ -20,6 +16,8 @@
   --shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
+html { scroll-behavior: smooth; }
+
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
   font-size: 15px;
@@ -28,11 +26,9 @@ body {
   line-height: 1.6;
 }
 
-/* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-gray); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #bbb; }
 
 /* ===== NAVBAR ===== */
 .navbar {
@@ -45,6 +41,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .logo {
@@ -67,7 +65,7 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   list-style: none;
 }
 
@@ -83,6 +81,55 @@ body {
   color: var(--primary);
   font-weight: 600;
 }
+
+/* ===== HAMBURGER (mobile) ===== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  background: none;
+  border: none;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--text-dark);
+  border-radius: 2px;
+  transition: all 0.3s;
+  display: block;
+}
+
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+.nav-mobile {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+.nav-mobile.open { display: flex; }
+
+.nav-mobile a {
+  padding: 12px 4px;
+  color: var(--text-gray);
+  text-decoration: none;
+  font-size: 15px;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+
+.nav-mobile a:last-child { border-bottom: none; }
+.nav-mobile a.active,
+.nav-mobile a:hover { color: var(--primary); font-weight: 600; }
 
 /* ===== BUTTON ===== */
 .btn {
@@ -112,6 +159,75 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* ===== HERO ===== */
+.hero-section {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+  padding: 80px 0;
+}
+
+.hero-inner {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.hero-text { flex: 1; }
+
+.hero-text h1 {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.hero-text p {
+  color: #aaa;
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.hero-stats-box {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-stat { text-align: center; }
+.hero-stat-num { font-size: 36px; font-weight: 800; color: var(--primary); }
+.hero-stat-lbl { font-size: 13px; color: #aaa; }
+
+/* ===== GRID MOTOR (unggulan) ===== */
+.motor-unggulan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ===== ESTIMASI ===== */
+.estimasi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.estimasi-grid .span2 { grid-column: span 2; }
+
+/* ===== KEUNGGULAN GRID ===== */
+.keunggulan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
 }
 
 /* ===== CARD ===== */
@@ -147,136 +263,273 @@ body {
   text-align: center;
   padding: 28px 20px;
   font-size: 13px;
-  margin-top: 0;
 }
 
-.footer a {
-  color: var(--primary);
-  text-decoration: none;
+/* ===== KATALOG ===== */
+.motor-grid-katalog {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
-/* ===== SMOOTH SCROLL ===== */
-html { scroll-behavior: smooth; }
-
-/* ===== ANIMASI FADE IN ===== */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
 }
 
-.fade-in {
-  animation: fadeInUp 0.5s ease forwards;
+.filter-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--text-gray);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* ===== RESPONSIVE MOBILE ===== */
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* ===== BENGKEL ===== */
+.layanan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.layanan-card {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.layanan-card:hover,
+.layanan-card.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-gray);
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.step-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 36px;
+}
+
+.step { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.step.active .step-circle { background: var(--primary); color: white; }
+.step.done .step-circle { background: #22c55e; color: white; }
+.step-label { font-size: 11px; color: var(--text-gray); font-weight: 600; }
+.step.active .step-label { color: var(--primary); }
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background: var(--border);
+  margin-bottom: 20px;
+  transition: background 0.3s;
+}
+
+.step-line.done { background: #22c55e; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.riwayat-item {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.status-selesai { background: #dcfce7; color: #15803d; }
+.status-proses  { background: #fef9c3; color: #a16207; }
+.status-antri   { background: #e0f2fe; color: #0369a1; }
+
+/* ===== BLOG ===== */
+.artikel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.artikel-featured {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 48px;
+}
+
+/* ===== LOADING OVERLAY ===== */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9998;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+}
+.loading-overlay.show { display: flex; }
+.spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== MODAL ===== */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9990;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-backdrop.show { display: flex; }
+.modal-box {
+  background: white;
+  border-radius: var(--radius-lg);
+  max-width: 680px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+/* ===== RESPONSIVE TABLET (768px) ===== */
 @media (max-width: 768px) {
 
-  /* Navbar mobile */
-  .navbar {
-    padding: 12px 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .nav-links {
-    gap: 14px;
-    order: 3;
-    width: 100%;
-    justify-content: center;
-    padding: 8px 0 4px;
-    border-top: 1px solid var(--border);
-  }
-
-  .nav-links a { font-size: 13px; }
+  /* Navbar */
+  .navbar { padding: 12px 16px; }
+  .nav-links { display: none; }
+  .navbar > .btn { display: none; }
+  .hamburger { display: flex; }
 
   /* Container */
   .container { padding: 0 16px; }
 
-  /* Hero section */
-  .hero-flex {
-    flex-direction: column !important;
-    gap: 28px !important;
-    padding: 48px 0 !important;
-  }
+  /* Hero */
+  .hero-section { padding: 40px 0; }
+  .hero-inner { flex-direction: column; gap: 24px; }
+  .hero-text h1 { font-size: 28px; }
+  .hero-text p { font-size: 14px; margin-bottom: 20px; }
+  .hero-stats-box { padding: 24px 16px; gap: 20px; }
+  .hero-stat-num { font-size: 26px; }
+  .hero-stat-lbl { font-size: 11px; }
 
-  .hero-flex h1 {
-    font-size: 28px !important;
-  }
+  /* Grid motor unggulan */
+  .motor-unggulan-grid { grid-template-columns: 1fr; gap: 16px; }
 
-  .hero-stats {
-    gap: 16px !important;
-    padding: 24px 16px !important;
-  }
+  /* Estimasi */
+  .estimasi-grid { grid-template-columns: 1fr; }
+  .estimasi-grid .span2 { grid-column: span 1; }
 
-  .hero-stats > div > div:first-child {
-    font-size: 26px !important;
-  }
+  /* Keunggulan */
+  .keunggulan-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
-  /* Grid 4 col → 2 col */
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 14px !important;
-  }
+  /* Katalog */
+  .motor-grid-katalog { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
-  /* Grid 3 col → 1 col */
-  .grid-3 {
-    grid-template-columns: 1fr !important;
-  }
+  /* Bengkel */
+  .layanan-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-row { grid-template-columns: 1fr; }
+  .step-line { width: 28px; }
+  .step-label { font-size: 9px; }
 
-  /* Estimasi form */
-  .estimasi-grid {
-    grid-template-columns: 1fr !important;
-  }
+  /* Blog */
+  .artikel-grid { grid-template-columns: 1fr; }
+  .artikel-featured { grid-template-columns: 1fr; }
 
-  .estimasi-grid select:last-child {
-    grid-column: span 1 !important;
-  }
-
-  /* Artikel featured */
-  .artikel-featured {
-    grid-template-columns: 1fr !important;
-  }
-
-  .artikel-featured .thumb {
-    min-height: 160px !important;
-    font-size: 64px !important;
-  }
-
-  .artikel-featured .body {
-    padding: 20px !important;
-  }
-
-  /* Layanan grid */
-  .layanan-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-
-  /* Form row */
-  .form-row {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Step bar */
-  .step-line { width: 28px !important; }
-  .step-label { font-size: 10px !important; }
-
-  /* Buttons */
-  .btn { padding: 9px 14px; font-size: 13px; }
-
-  /* Harga estimasi */
-  #harga-hasil { font-size: 22px !important; }
+  /* Section padding */
+  section { padding-top: 36px !important; padding-bottom: 36px !important; }
 }
 
+/* ===== RESPONSIVE HP KECIL (480px) ===== */
 @media (max-width: 480px) {
-  .grid-4 {
-    grid-template-columns: 1fr !important;
-  }
-
-  .hero-flex h1 {
-    font-size: 24px !important;
-  }
-
-  .hero-flex > div:last-child {
-    display: none !important;
-  }
+  .hero-text h1 { font-size: 22px; }
+  .hero-stats-box { gap: 12px; }
+  .hero-stat-num { font-size: 22px; }
+  .keunggulan-grid { grid-template-columns: 1fr; }
+  .motor-grid-katalog { grid-template-columns: 1fr; }
+  .layanan-grid { grid-template-columns: repeat(2, 1fr); }
+  .step-circle { width: 28px; height: 28px; font-size: 12px; }
+  .step-line { width: 18px; }
 }
